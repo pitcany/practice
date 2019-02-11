@@ -1,0 +1,11 @@
+channels:
+#  - file://opt/intel/conda_channel
+#  - anaconda
+#  - anaconda-extras
+  - cvxgrp
+  - pytorch
+  - conda-forge
+  - bioconda
+  - intel
+  - r
+  - defaults
