@@ -237,19 +237,19 @@ def ListPrimes(n):
 def CoinChange(S,n):
     S.sort()
     m=len(S)
-    dp = [1e10000]*(n+1)
+    dp = [float("inf")]*(n+1)
     dp[0] = 0
     for i in range(1,n+1):
         for j in range(m):
             if i>=S[j]:
                 dp[i]=min(dp[i],dp[i-S[j]]+1)
     
-    if dp[n]==1e10000:
+    if dp[n]==float("inf"):
         dp[n]=-1
         
     return(dp[n])
 
-CoinChange([1,25483],2)
+CoinChange([1,2,25483],5)
 
 def gcd(a,b):
     if a==0:
@@ -303,3 +303,32 @@ def longest_unique_subarray(lst):
 
 longest_unique_subarray([1,2,3,4,5,5]) 
 #allUnique("ABCDEF")
+
+def find_unsorted_subarray(nums):
+    left, right = None, None
+    n = len(nums)
+    max_seen, min_seen = -float("inf"), float("inf")
+    
+    for i in range(n):
+        max_seen = max(max_seen, nums[i])
+        if nums[i] < max_seen:
+            right = i
+    
+    for i in range(n-1, -1, -1):
+        min_seen = min(min_seen, nums[i])
+        if nums[i] > min_seen:
+            left = i
+    
+    return left,right
+
+from math import floor,log,pow
+def reverse(num):
+    if num==0:
+        return 0
+    elif num<=9:
+        return num
+    else:
+        num_digits = floor(log(num,10))+1
+        return (num%10*pow(10,num_digits-1)+reverse(num//10))
+    
+find_unsorted_subarray([2,6,4,8,10,9,15])
