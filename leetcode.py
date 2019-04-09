@@ -174,52 +174,52 @@ class Solution(object):
         return dp[n]
                 
     
-if __name__ == '__main__':
-    g = Graph()
-    g.addEdge(0, 1)
-    g.addEdge(0, 2)
-    g.addEdge(1, 2)
-    g.addEdge(2, 0)
-    g.addEdge(2, 3)
-    g.addEdge(3, 3)
+#if __name__ == '__main__':
+#    g = Graph()
+#    g.addEdge(0, 1)
+#    g.addEdge(0, 2)
+#    g.addEdge(1, 2)
+#    g.addEdge(2, 0)
+#    g.addEdge(2, 3)
+#    g.addEdge(3, 3)
+#
+#    g.printGraph()
+#    print('DFS:')
+#    g.DFS()
+#    
+#    print('\n')
+#    ykp=Solution()
+#    print(ykp.dp_count([1, 2, 3], 3, 4))  # answer 4
+#    print(ykp.dp_count([2, 5, 3, 6], 4, 10))  # answer 5
 
-    g.printGraph()
-    print('DFS:')
-    g.DFS()
-    
-    print('\n')
-    ykp=Solution()
-    print(ykp.dp_count([1, 2, 3], 3, 4))  # answer 4
-    print(ykp.dp_count([2, 5, 3, 6], 4, 10))  # answer 5
-
-import numpy as np
-from hmmlearn import hmm
-np.random.seed(42)
-
-startprob = np.array([0.6, 0.3, 0.1, 0.0])
-# The transition matrix, note that there are no transitions possible
-# between component 1 and 3
-transmat = np.array([[0.7, 0.2, 0.0, 0.1],
-                     [0.3, 0.5, 0.2, 0.0],
-                     [0.0, 0.3, 0.5, 0.2],
-                     [0.2, 0.0, 0.2, 0.6]])
-# The means of each component
-means = np.array([[0.0,  0.0],
-                  [0.0, 11.0],
-                  [9.0, 10.0],
-                  [11.0, -1.0]])
-# The covariance of each component
-covars = .5 * np.tile(np.identity(2), (4, 1, 1))
-
-# Build an HMM instance and set parameters
-model = hmm.GaussianHMM(n_components=4, covariance_type="full")
-
-# Instead of fitting it from the data, we directly set the estimated
-# parameters, the means and covariance of the components
-model.startprob_ = startprob
-model.transmat_ = transmat
-model.means_ = means
-model.covars_ = covars
+#import numpy as np
+#from hmmlearn import hmm
+#np.random.seed(42)
+#
+#startprob = np.array([0.6, 0.3, 0.1, 0.0])
+## The transition matrix, note that there are no transitions possible
+## between component 1 and 3
+#transmat = np.array([[0.7, 0.2, 0.0, 0.1],
+#                     [0.3, 0.5, 0.2, 0.0],
+#                     [0.0, 0.3, 0.5, 0.2],
+#                     [0.2, 0.0, 0.2, 0.6]])
+## The means of each component
+#means = np.array([[0.0,  0.0],
+#                  [0.0, 11.0],
+#                  [9.0, 10.0],
+#                  [11.0, -1.0]])
+## The covariance of each component
+#covars = .5 * np.tile(np.identity(2), (4, 1, 1))
+#
+## Build an HMM instance and set parameters
+#model = hmm.GaussianHMM(n_components=4, covariance_type="full")
+#
+## Instead of fitting it from the data, we directly set the estimated
+## parameters, the means and covariance of the components
+#model.startprob_ = startprob
+#model.transmat_ = transmat
+#model.means_ = means
+#model.covars_ = covars
 
 def ListPrimes(n):
     prime = [True for i in range(n+1)]
@@ -332,3 +332,78 @@ def reverse(num):
         return (num%10*pow(10,num_digits-1)+reverse(num//10))
     
 find_unsorted_subarray([2,6,4,8,10,9,15])
+
+def getMedian(arr1,arr2,n):
+    
+    #no element in either array
+    if n == 0:
+        return -1
+    
+    # 1 element in each array
+    elif n == 1:
+        return (arr1[0]+arr2[0])/2
+    
+    # 2 elements in each
+    elif n == 2:
+        return (max(arr1[0],arr2[0])+min(arr1[1],arr2[1]))/2
+
+    else:
+        m1 = median(arr1,n)
+        m2 = median(arr2,n)
+        
+        if m1 == m2:
+            return m1
+        
+        elif m1 < m2:
+            if n % 2 == 0:
+                return getMedian(arr1[(int(n/2)-1):],arr2[:(int(n/2)+1)],int(n/2)+1)
+            else:
+                return getMedian(arr1[(int(n/2)):],arr2[:(int(n/2)+1)],int(n/2)+1)
+        
+        else:
+            if n % 2 == 0:
+                return getMedian(arr1[:(int(n/2)+1)],arr2[(int(n/2)-1):],int(n/2)+1)
+            else:
+                return getMedian(arr1[:(int(n/2)+1)],arr2[(int(n/2)):],int(n/2)+1)
+        
+def median(arr, n):
+    if n % 2 == 0:
+        return (arr[int(n/2) - 1] + arr[int(n/2)])/2
+    else:
+        return arr[int(n/2)]
+    
+arr1 = [1,2,3,6,9]
+arr2 = [4,6,8,10,11]
+n = len(arr1)
+getMedian(arr1,arr2,n)
+
+class Solution1:
+    def findMedianSortedArrays(self, A, B):
+        l = len(A) + len(B)
+        if l % 2 == 1:
+            return self.kth(A, B, l // 2)
+        else:
+            return (self.kth(A, B, l // 2) + self.kth(A, B, l // 2 - 1)) / 2.   
+    
+    def kth(self, a, b, k):
+        if not a:
+            return b[k]
+        if not b:
+            return a[k]
+        ia, ib = len(a) // 2 , len(b) // 2
+        ma, mb = a[ia], b[ib]
+    
+        # when k is bigger than the sum of a and b's median indices 
+        if ia + ib < k:
+            # if a's median is bigger than b's, b's first half doesn't include k
+            if ma > mb:
+                return self.kth(a, b[ib + 1:], k - ib - 1)
+            else:
+                return self.kth(a[ia + 1:], b, k - ia - 1)
+            # when k is smaller than the sum of a and b's indices
+        else:
+            # if a's median is bigger than b's, a's second half doesn't include k
+            if ma > mb:
+                return self.kth(a[:ia], b, k)
+            else:
+                return self.kth(a, b[:ib], k)
