@@ -372,38 +372,103 @@ def median(arr, n):
     else:
         return arr[int(n/2)]
     
-arr1 = [1,2,3,6,9]
-arr2 = [4,6,8,10,11]
-n = len(arr1)
-getMedian(arr1,arr2,n)
+#arr1 = [1,2,3,6,9,12,39,44]
+#arr2 = [4,6,8,10,11,29,30,31,35]
+#n = len(arr1)
+#getMedian(arr1,arr2,n)
+
 
 class Solution1:
-    def findMedianSortedArrays(self, A, B):
-        l = len(A) + len(B)
-        if l % 2 == 1:
-            return self.kth(A, B, l // 2)
-        else:
-            return (self.kth(A, B, l // 2) + self.kth(A, B, l // 2 - 1)) / 2.   
+    def findMedianSortedArrays(self,A,B):
+        m = len(A)
+        n = len(B)
     
-    def kth(self, a, b, k):
-        if not a:
-            return b[k]
-        if not b:
-            return a[k]
-        ia, ib = len(a) // 2 , len(b) // 2
-        ma, mb = a[ia], b[ib]
-    
-        # when k is bigger than the sum of a and b's median indices 
-        if ia + ib < k:
-            # if a's median is bigger than b's, b's first half doesn't include k
-            if ma > mb:
-                return self.kth(a, b[ib + 1:], k - ib - 1)
-            else:
-                return self.kth(a[ia + 1:], b, k - ia - 1)
-            # when k is smaller than the sum of a and b's indices
+        if ((m+n)%2 != 0):
+            return self.findKth(A,0,m-1,B,0,n-1,(m+n)//2)
         else:
-            # if a's median is bigger than b's, a's second half doesn't include k
-            if ma > mb:
-                return self.kth(a[:ia], b, k)
+            return (self.findKth(A,0,m-1,B,0,n-1,(m+n)//2) + self.findKth(A,0,m-1,B,0,n-1,(m+n)//2-1))*0.5
+                
+    def findKth(self, A, p1, r1, B, p2, r2, k):
+        # k means 'there are k elements beneath so this can go from 0 to n-1
+    	n1 = r1-p1+1
+    	n2 = r2-p2+1
+    
+    	if (n1 == 0):
+    		return B[p2+k]
+    	elif (n2 == 0):
+    		return A[p1+k]
+    	elif (k == 0):
+    		return min(A[p1],B[p2])
+    
+    	i = int(n1*k/(n1+n2))
+    	j = k-1-i
+        # i + j + 1 = k
+    
+    	mid1 = min(p1+i, r1)
+    	mid2 = min(p2+j, r2)
+    
+    	if (A[mid1] > B[mid2]):
+    		k = k - (mid2-p2+1)
+    		r1 = mid1
+    		p2 = mid2+1
+    	else:
+    		k = k - (mid1-p1+1)
+    		p1 = mid1+1
+    		r2 = mid2
+        
+    	return self.findKth(A, p1, r1, B, p2, r2, k)
+    
+#ykp=Solution1()
+#ykp.findKth([1,3,5,7],0,3,[2,4,6,8,10,11],0,5,0)
+
+class Solution2:
+    def TwoSum(self,nums):
+        nums.sort()
+        start = 0
+        end = len(nums)-1
+        while (start < end):
+            if nums[start]+nums[end] < 0:
+                start += 1
+            elif nums[start]+nums[end] > 0:
+                end -= 1
             else:
-                return self.kth(a, b[:ib], k)
+                return True
+        return False
+    
+    def ThreeSum(self,nums,target):
+        nums.sort()
+        solns = []
+        for i in range(len(nums)-2):
+            j = i+1
+            k = len(nums)-1
+            if (i != 0 and nums[i]==nums[i-1]):
+                continue
+            while j<k:
+                if (j != i+1 and nums[j]==nums[j-1]):
+                        j+=1
+                        continue
+                if nums[i]+nums[j]+nums[k] < target:
+                    j += 1
+                elif nums[i]+nums[j]+nums[k] > target:
+                    k -= 1
+                else:
+                    solns.append([nums[i],nums[j],nums[k]])
+                    j += 1
+                    k -= 1
+        return solns
+    
+    def Foursum(self,nums,target):
+        nums.sort()
+        solns = []
+        n = len(nums)
+        for i in range(n-3):
+            if (i != 0 and nums[i]==nums[i-1]):
+                continue
+            if (self.ThreeSum(nums[i+1:],target-nums[i]) != []):
+                solns.extend([[nums[i]]+x for x in self.ThreeSum(nums[i+1:],target-nums[i])])
+        return solns
+
+ykp=Solution2()
+#ykp.ThreeSum([3,5,9,-5,2,-8])
+#ykp.ThreeSum([-2,0,0,2,2])
+#ykp.TwoSum([3,5,9,-15,2])
