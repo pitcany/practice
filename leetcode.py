@@ -333,38 +333,38 @@ def reverse(num):
     
 find_unsorted_subarray([2,6,4,8,10,9,15])
 
-def getMedian(arr1,arr2,n):
-    
-    #no element in either array
-    if n == 0:
-        return -1
-    
-    # 1 element in each array
-    elif n == 1:
-        return (arr1[0]+arr2[0])/2
-    
-    # 2 elements in each
-    elif n == 2:
-        return (max(arr1[0],arr2[0])+min(arr1[1],arr2[1]))/2
-
-    else:
-        m1 = median(arr1,n)
-        m2 = median(arr2,n)
-        
-        if m1 == m2:
-            return m1
-        
-        elif m1 < m2:
-            if n % 2 == 0:
-                return getMedian(arr1[(int(n/2)-1):],arr2[:(int(n/2)+1)],int(n/2)+1)
-            else:
-                return getMedian(arr1[(int(n/2)):],arr2[:(int(n/2)+1)],int(n/2)+1)
-        
-        else:
-            if n % 2 == 0:
-                return getMedian(arr1[:(int(n/2)+1)],arr2[(int(n/2)-1):],int(n/2)+1)
-            else:
-                return getMedian(arr1[:(int(n/2)+1)],arr2[(int(n/2)):],int(n/2)+1)
+#def getMedian(arr1,arr2,n):
+#    
+#    #no element in either array
+#    if n == 0:
+#        return -1
+#    
+#    # 1 element in each array
+#    elif n == 1:
+#        return (arr1[0]+arr2[0])/2
+#    
+#    # 2 elements in each
+#    elif n == 2:
+#        return (max(arr1[0],arr2[0])+min(arr1[1],arr2[1]))/2
+#
+#    else:
+#        m1 = median(arr1,n)
+#        m2 = median(arr2,n)
+#        
+#        if m1 == m2:
+#            return m1
+#        
+#        elif m1 < m2:
+#            if n % 2 == 0:
+#                return getMedian(arr1[(int(n/2)-1):],arr2[:(int(n/2)+1)],int(n/2)+1)
+#            else:
+#                return getMedian(arr1[(int(n/2)):],arr2[:(int(n/2)+1)],int(n/2)+1)
+#        
+#        else:
+#            if n % 2 == 0:
+#                return getMedian(arr1[:(int(n/2)+1)],arr2[(int(n/2)-1):],int(n/2)+1)
+#            else:
+#                return getMedian(arr1[:(int(n/2)+1)],arr2[(int(n/2)):],int(n/2)+1)
         
 def median(arr, n):
     if n % 2 == 0:
@@ -472,3 +472,193 @@ ykp=Solution2()
 #ykp.ThreeSum([3,5,9,-5,2,-8])
 #ykp.ThreeSum([-2,0,0,2,2])
 #ykp.TwoSum([3,5,9,-15,2])
+#class NQueens:
+#    
+#    def __init__(self, size):
+#        self.size = size
+#        self.solutions = 0
+#        self.solve()
+#        
+#    def solve(self):
+#        positions = [-1] * self.size
+#        self.put_queen(positions,0)
+#        print("Found", self.solutions, "solutions.")
+#    
+#    def put_queen(self, positions, target_row):
+#        if target_row == self.size:
+#            self.show_full_board(positions)
+#            self.solutions += 1
+#        else:
+#            for column in range(self.size):
+#                if self.check_place(positions,target_row,column):
+#                    positions[target_row] = column
+#                    self.put_queen(positions, target_row+1)
+#    
+#    def check_place(self, positions, occupied_rows, column):
+#        for i in range(occupied_rows):
+
+        
+"""The n queens puzzle."""
+class NQueens:
+    """Generate all valid solutions for the n queens puzzle"""
+    def __init__(self, size):
+        # Store the puzzle (problem) size and the number of valid solutions
+        self.size = size
+        self.solutions = 0
+        self.solve()
+
+    def solve(self):
+        """Solve the n queens puzzle and print the number of solutions"""
+        positions = [-1] * self.size
+        self.put_queen(positions, 0)
+        print("Found", self.solutions, "solutions.")
+
+    def put_queen(self, positions, target_row):
+        """
+        Try to place a queen on target_row by checking all N possible cases.
+        If a valid place is found the function calls itself trying to place a queen
+        on the next row until all N queens are placed on the NxN board.
+        """
+        # Base (stop) case - all N rows are occupied
+        if target_row == self.size:
+            self.show_full_board(positions)
+            # self.show_short_board(positions)
+            self.solutions += 1
+        else:
+            # For all N columns positions try to place a queen
+            for column in range(self.size):
+                # Reject all invalid positions
+                if self.check_place(positions, target_row, column):
+                    positions[target_row] = column
+                    self.put_queen(positions, target_row + 1)
+
+
+    def check_place(self, positions, occupied_rows, column):
+        """
+        Check if a given position is under attack from any of
+        the previously placed queens (check column and diagonal positions)
+        """
+        for i in range(occupied_rows):
+            if positions[i] == column or \
+                positions[i]-column == i-occupied_rows or \
+                positions[i]-column == occupied_rows-i:
+                return False
+#            if positions[i] == column or \
+#                positions[i] - i == column - occupied_rows or \
+#                positions[i] + i == column + occupied_rows:
+#                return False
+        return True
+
+    def show_full_board(self, positions):
+        """Show the full NxN board"""
+        for row in range(self.size):
+            line = ""
+            for column in range(self.size):
+                if positions[row] == column:
+                    line += "Q "
+                else:
+                    line += ". "
+            print(line)
+        print("\n")
+
+    def show_short_board(self, positions):
+        """
+        Show the queens positions on the board in compressed form,
+        each number represent the occupied column position in the corresponding row.
+        """
+        line = ""
+        for i in range(self.size):
+            line += str(positions[i]) + " "
+        print(line)
+
+def main():
+    """Initialize and solve the n queens puzzle"""
+    NQueens(7)
+
+#if __name__ == "__main__":
+    # execute only if run as a script
+#    main()
+
+def dfs(G,s,S=None):
+    if S is None: S=set()
+    S.add(s)
+    for u in G[s]:
+        if u in S: continue
+        dfs(G,u,S)
+
+from collections import deque
+def bfs(G,s):
+    P,Q=set(s), deque([s])
+#    P,Q={s: None}, deque([s])
+    while Q:
+        u = Q.popleft()
+        for v in G[u]:
+            if v in P: continue
+            P.add(v)
+            Q.append(v)
+    return P
+        
+def permutation(lst):
+    if len(lst)==0:
+        return []
+    
+    if len(lst)==1:
+        return [lst]
+    
+    l = []
+    
+    for i in range(len(lst)):
+        m=lst[i]
+        remlst = lst[:i] + lst[(i+1):]
+        
+        for p in permutation(remlst):
+            l.append([m]+p)
+    return l
+
+class NQueens_YKP:
+    # board is a list of n elements...board[i] is the column
+    # in the ith row where a queen is placed
+    
+    def represent(self,board):
+        """Show the full NxN board"""
+        new_board = []
+        n = len(board)
+        for row in range(n):
+            line = ""
+            for column in range(n):
+                if board[row] == column:
+                    line += "Q"
+                else:
+                    line += "."
+            new_board.append(line)
+        return(new_board)
+    
+    def find_configurations(self,n,board):
+        if len(board)==n:
+            return 1
+            #return [self.represent(board)]
+        
+        #configs = []
+        count = 0
+        for i in range(n):
+            board.append(i)
+            if self.is_valid(board):
+                count += self.find_configurations(n,board)
+          #      configs.extend(self.find_configurations(n,board))
+            board.pop()
+        return count
+        #return configs
+    
+    def is_valid(self,board):
+        if board[-1] in board[:-1]:
+            return False
+        coords=[x for x in enumerate(board)]
+        past_queens = coords[:-1]
+        candidate = coords[-1]
+        for past_queen in past_queens:
+            if abs(candidate[1]-past_queen[1]) == candidate[0]-past_queen[0]:
+                return False
+        return True
+
+ykp=NQueens_YKP()
+ykp.find_configurations(8,[])
