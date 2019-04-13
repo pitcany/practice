@@ -662,3 +662,25 @@ class NQueens_YKP:
 
 ykp=NQueens_YKP()
 ykp.find_configurations(8,[])
+
+import math        
+def numSquares(n):
+    table=[0]+[float("inf")]*n
+    for i in range(1,int(math.sqrt(n))+1):
+        table[i**2]=1
+    for j in range(n):
+        for k in range(int(math.sqrt(n-j)+1)):
+            table[j+k**2]=min(table[j+k**2],1+table[j])
+    return table[n]
+
+def subsets(nums):
+    if len(nums)==0:
+        return [[]]
+    if len(nums)==1:
+        return [nums,[]]
+    list_of_subsets=[[]]
+    for i in range(len(nums)):
+        list_of_subsets.extend([[nums[i]]+x for x in subsets(nums[(i+1):])])
+    return list_of_subsets
+
+subsets([1,2,3])
