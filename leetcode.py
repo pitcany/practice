@@ -435,6 +435,19 @@ class Solution2:
                 return True
         return False
     
+    def TwoSumRedux(self,nums,target):
+        nums = [pair for pair in enumerate(nums)]
+        complements = {i[1]: target-i[1] for i in nums}
+        for pair in nums:
+            # look at pairs different
+            i = pair[1]
+            j = complements[i]
+            if j in [z for z in nums if z!= pair]:
+                x = pair[0]
+                y=min([z[0] for z in nums if z[1]==j])
+                return ((x,y))
+        return None
+    
     def ThreeSum(self,nums,target):
         nums.sort()
         solns = []
@@ -684,3 +697,70 @@ def subsets(nums):
     return list_of_subsets
 
 subsets([1,2,3])
+
+def TwoSumRedux(nums,target):
+    complements = {}
+    for i in range(len(nums)):
+        if nums[i] in complements:
+            return complements[nums[i]],i
+        complements[target-nums[i]]=i
+    return None
+TwoSumRedux([3,3],6)
+
+def TwoSumOptimized(nums,target):
+    idx1=0
+    idx2=len(nums)-1
+    while (idx1<idx2):
+        if nums[idx1]+nums[idx2] < target:
+            idx1 += 1
+        elif nums[idx1]+nums[idx2] > target:
+            idx2 -= 1
+        else:
+            return idx1,idx2
+
+def myPow(x: float, n: int) -> float:
+    if n==0:
+        return 1
+    elif n>0:
+        if n%2 == 0:
+            return myPow(x,n//2)*myPow(x,n//2)
+        else:
+            return x*myPow(x,n//2)*myPow(x,n//2)
+    else:
+        return 1/myPow(x,-n)
+    
+def letterCombinations(digits):
+    w = {'2':['a','b','c'],'3':['d','e','f'],'4':['g','h','i'],'5':['j','k','l'],
+         '6':['m','n','o'],'7':['p','q','r','s'],'8':['t','u','v'],
+         '9':['w','x','y','z']}
+    if len(digits)==0:
+        return []
+    if len(digits)==1:
+        return w[digits]
+    else:
+        combinations=[]
+        for j in digits[0]:
+            combinations.extend([k+z for k in w[j] for z in letterCombinations(digits[1:])])
+        return combinations
+    
+def mergesort(list):
+
+    def merge(l,r):  
+        newlist=[]
+        while l and r:
+            if r is [] or l[0]<=r[0]:
+                newlist.append(l.pop(0))
+            elif l is [] or l[0]>r[0]:
+                newlist.append(r.pop(0))
+        if not l:
+            newlist.extend(r)
+        elif not r:
+            newlist.extend(l)
+        return newlist
+    
+    n=len(list)
+    if n==1:
+        return list
+    left = mergesort(list[:(n//2)])
+    right = mergesort(list[(n//2):])
+    return merge(left,right)
