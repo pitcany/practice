@@ -744,7 +744,6 @@ def letterCombinations(digits):
         return combinations
     
 def mergesort(list):
-
     def merge(l,r):  
         newlist=[]
         while l and r:
