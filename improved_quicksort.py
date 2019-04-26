@@ -29,7 +29,7 @@ def partition3(a, l, r):
             break
     return (j,k)
 
-trythis = [5,5,5,3,6,7,8,2,1,13,9,7]
+# trythis = [5,5,5,3,6,7,8,2,1,13,9,7]
 # partition3(trythis,0,len(trythis)-1)
 
 def partition2(a, l, r):
