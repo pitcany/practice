@@ -15,6 +15,8 @@ def calc_dist(a,b):
 
 def minimum_distance(points):
     n = len(points)
+    points_sorted_by_x = sorted(points,key=lambda z:z[0])
+    points_sorted_by_y = sorted(points,key=lambda z:z[1])
     if n <= 1:
         raise Exception
     elif n==2:
@@ -28,10 +30,8 @@ def minimum_distance(points):
     else:
         #sort by x-axis and y-axis--points is sorted by x
         #points_sorted_by_y is sorted by y
-        points = sorted(points,key=lambda z:z[0])
-        points_sorted_by_y = sorted(points,key=lambda z:z[1])
-        leftPoints = points[:int(n/2)]
-        rightPoints = points[int(n/2):]
+        leftPoints = points_sorted_by_x[:int(n/2)]
+        rightPoints = points_sorted_by_x[int(n/2):]
         
         #Divide and Conquer
         d1 = minimum_distance(leftPoints)
@@ -41,22 +41,12 @@ def minimum_distance(points):
         d = min(d1,d2)
         
         #cut self of points into half
-        mid = (points[int(n/2)][0] + points[int(n/2) - 1][0])/2 if n%2 == 0 else points[int(n/2)][0]
+        mid = (points_sorted_by_x[int(n/2)][0] + points_sorted_by_x[int(n/2) - 1][0])/2 if n%2 == 0 else points_sorted_by_x[int(n/2)][0]
         
         #find points in [mid-d,mid+d] sorted by y axis
         midRange = [z for z in points_sorted_by_y if mid-d <= z[0] <= mid+d]
         
-#        ret = None
         localMin = float("inf")
-        
-        # Brute force -- find a point and delta y less than d--compare to current min dist
-#        for i in range(len(midRange)):
-#            a = midRange[i]
-#            for j in range(i+1, len(midRange)):
-#                b = midRange[j]
-#                if (abs(a[1]-b[1]) <= d and calc_dist(a,b) < localMin):
-#                    localMin = calc_dist(a,b)
-#        return min(localMin,d)
 
         for i in range(len(midRange)):
             a = midRange[i]
