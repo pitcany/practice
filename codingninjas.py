@@ -124,3 +124,57 @@ subset_sum([1,4,5,6,7,12,15,120],8,139)
 
 subset_sum_opt([1,2,3,4,5,6],6,12)
 subset_sum_opt([1,4,5,6,7,12,15,120],8,139)
+
+def pwin(x, y, tolerance):
+    # Write your code here
+    decimal_places=math.ceil(-math.log10(tolerance))
+    num = 0
+    n = len(x)
+    m = len(y)
+    for i in range(n):
+        for j in range(m):
+            if x[i]>y[j]:
+                num += 1
+    return round(num/(n*m),decimal_places)
+
+def siftdown(i,arr):
+    minIndex = i
+    l = 2*i+1
+    if l < len(arr) and arr[l] < arr[minIndex]:
+        minIndex = l
+    r = 2*i+2
+    if r < len(arr) and arr[r] < arr[minIndex]:
+        minIndex = r
+    if i != minIndex:
+        arr[i],arr[minIndex] = arr[minIndex],arr[i]
+        siftdown(minIndex,arr)
+        
+def buildheap(arr):
+    size = len(arr)
+    for i in range(size//2, -1, -1):
+        siftdown(i,arr)
+        
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+def printLL(head):
+    while head is not None:
+        print(head.data,end=" ")
+        head = head.next
+
+def increment(head):
+     temp = head
+     while temp is not None:
+        temp.data +=1
+        temp = temp.next
+
+
+
+node1 = Node(10)
+node2 = Node(20)
+node1.next = node2
+increment(node1)
+printLL(node1)
+
