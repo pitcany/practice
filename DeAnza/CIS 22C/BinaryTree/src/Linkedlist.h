@@ -35,86 +35,82 @@ public:
 	Node<T>* tail;
 	// introduce 'head' node for double link
 	DList() { head = NULL; tail = NULL; }  // default constructor
+	
+	~DList() {
+		//
+		Node<T>* temp = head;
+		// traverse to delete all nodes
+		while (tail != NULL) {
+			head = head->next;
+			free(temp);
+			temp = head;
+		}
+		tail = NULL;
+	}
 	// appends to tail of list
-	void Append(T data)
-	{
+	void Append(T data) {
 		Node<T>* pdata = new Node<T>(data);
-		if (tail == NULL)
-		{
+		if (tail == NULL) {
 			tail = pdata;
 			head = pdata;
 		}
-		else
-		{
+		else {
 			pdata->prev = tail;
 			tail->next = pdata;
 			tail = pdata;
 		}
 	}
 	// prepends to head of list
-	void Prepend(T data)
-	{
+	void Prepend(T data) {
 		//
 		Node<T>* pdata = new Node<T>(data);
-		if (head == NULL)
-		{
+		if (head == NULL) {
 			head = pdata;
 			tail = pdata;
 		}
-		else
-		{
+		else {
 			pdata->next = head;
 			head->prev = pdata;
 			head = pdata;
 		}
 	}
 	// inserts data after found data
-	void InsertAfter(T find, T data)
-	{
+	void InsertAfter(T find, T data) {
 		//
-		Node<T>* pdata = new Node<T>(data);
 		Node<T>* temp = head;
 		// traverse to find the location to insert data
-		while( temp->next != NULL) {
+		while (temp != NULL) {
 			if (temp->data == find) {
+				Node<T>* pdata = new Node<T>(data);
+				pdata->prev = temp;
 				pdata->next = temp->next;
 				temp->next = pdata;
-				pdata->prev = temp;
-				pdata->next->prev = pdata;
+				if (pdata->next != NULL)
+					pdata->next->prev = pdata;
+				else
+					tail = pdata;
 				return;
 			}
 			temp = temp->next;
-		}
-		if (temp->data == find) {
-			temp->next = pdata;
-			pdata->prev = temp;
-			tail = pdata;
-			return;
 		}
 		// If we cannot find the data
 		cout << "Data not found" << endl;
 	}
 	// inserts data before found data
-	void InsertBefore(T find, T data)
-	{
+	void InsertBefore(T find, T data) {
 		//
-		Node<T>* pdata = new Node<T>(data);
-		Node<T>* prev_node;
 		Node<T>* temp = head;
 		// traverse to find the location to insert data
-		if (temp != NULL && temp->data == find){
-			pdata->next = temp;
-			temp->prev = pdata;
-			head=pdata;
-		}
-
-		while( temp != NULL) {
+		while (temp != NULL) {
 			if (temp->data == find) {
-				prev_node = temp->prev;
+				Node<T>* pdata = new Node<T>(data);
+				pdata->prev = temp->prev;
 				pdata->next = temp;
-				prev_node->next = pdata;
-				pdata->prev = prev_node;
 				temp->prev = pdata;
+				if (pdata->prev != NULL)
+					pdata->prev->next = pdata;
+				else
+					head = pdata;
 				return;
 			}
 			temp = temp->next;
@@ -123,12 +119,11 @@ public:
 		cout << "Data not found" << endl;
 	}
 	// finds data node and returns it
-	Node<T>* Search(T data)
-	{
+	Node<T>* Search(T data) {
 		//
 		Node<T>* temp = head;
 		// traverse to find the location to insert data
-		while( temp != NULL) {
+		while (temp != NULL) {
 			if (temp->data == data) {
 				cout << "Found the node with data: " << temp->data << "\n";
 				return temp;
@@ -140,26 +135,30 @@ public:
 		return NULL;
 	}
 	// deletes a node from the list
-	void Delete(T data)
-	{
+	void Delete(T data) {
 		//
 		Node<T>* temp = head;
 		Node<T>* prev_node;
-		if (temp != NULL && temp->data == data){
-			head = temp->next;
-			free(temp);
-			return;
-		}
 		// traverse to find the location to insert data
-		while( temp != NULL) {
+		while (temp != NULL) {
 			if (temp->data == data) {
-				prev_node = temp->prev;
-				prev_node->next = temp->next;
-				if (temp != tail){
-					(temp->next)->prev = prev_node;
+				if (head == tail) {
+					head = NULL;
+					tail = NULL;
 				}
 				else {
-					tail = prev_node;
+					if (temp != head) 
+						temp->prev->next = temp->next;
+					else {
+						head = head->next;
+						head->prev = NULL;
+					}
+					if (temp != tail)
+						temp->next->prev = temp->prev;
+					else {
+						tail = tail->prev;
+						tail->next = NULL;
+					}
 				}
 				free(temp);
 				return;
@@ -171,40 +170,37 @@ public:
 
 	}
 	// remove tail
-	void DeleteTail(){
-		if (tail != NULL & tail != head) {
+	void DeleteTail() {
+		if (tail != NULL) {
 			Node<T>* temp = tail;
-			Node<T>* prev_node;
-			prev_node = temp->prev;
-			prev_node->next = temp->next;
-			tail = prev_node;
+			if (tail == head) {
+				head = NULL;
+				tail = NULL;
+			}
+			else {
+				tail = tail->prev;
+				tail->next = NULL;
+			}
 			free(temp);
-			return;
-		}
-
-		if (tail == head){
-			head = NULL;
-			tail = NULL;
-			return;
 		}
 	}
 	// remove head
-	void DeleteHead(){
-		if (head != NULL & head != tail) {
+	void DeleteHead() {
+		if (head != NULL) {
 			Node<T>* temp = head;
-			head = temp->next;
+			if (head == tail) {
+				head = NULL;
+				tail = NULL;
+			}
+			else {
+				head = head->next;
+				head->prev = NULL;
+			}
 			free(temp);
-			return;
-		}
-
-		if (head==tail){
-			head=NULL;
-			tail=NULL;
-			return;
 		}
 	}
 	// retrieve head
-	T RetrieveHead(){
+	T RetrieveHead() {
 		if (head != NULL) {
 			return head->data;
 		}
@@ -212,72 +208,63 @@ public:
 		return 0;
 	}
 	// retrieve tail
-	T RetrieveTail(){
-		if (tail != NULL){
+	T RetrieveTail() {
+		if (tail != NULL) {
 			return tail->data;
 		}
 		// return 0 if empty
 		return 0;
 	}
 	// returns number of nodes in list
-	int Count()
-	{
+	int Count() {
 		//
 		int index = 0;
 		Node<T>* temp = head;
 		// traverse to find the location to insert data
-		while( temp != NULL) {
+		while (temp != NULL) {
 			temp = temp->next;
 			index++;
 		}
 		return index;
 	}
 	// returns true if list is empty
-	bool IsEmpty()
-	{
+	bool IsEmpty() {
 		//
-		if (head==NULL) {
+		if (head == NULL) {
 			return true;
 		}
 		return false;
 	}
 	// prints list from tail of list
-	void Output()
-	{
+	void OutputFromTail() {
 		Node<T>* rover = tail;
-		while (rover != NULL)
-		{
-			cout << rover->data << '\t';
+		while (rover != NULL) {
+			cout << rover->data << "\t";
 			rover = rover->prev;
 		}
 		cout << endl;
 	}
 	// prints list from head
-	void OutputFromHead()
-		{
-			Node<T>* rover = head;
-			while (rover != NULL)
-			{
-				cout << rover->data << '\t';
-				rover = rover->next;
-			}
-			cout << endl;
+	void OutputFromHead() {
+		Node<T>* rover = head;
+		while (rover != NULL) {
+			cout << rover->data << "\t";
+			rover = rover->next;
 		}
-
-	void PrintListRecursively(Node<T>* curr)
-		{
-			if (curr==NULL)
-				{
-					cout << "\t";
-				    return;
-				}
-			cout << curr->data << "\t";
-			PrintListRecursively(curr->next);
-		}
-
-	void PrintRecursively(){
-		PrintListRecursively(head);
 		cout << endl;
+	}
+
+	void PrintListRecursively(Node<T>* curr) {
+		if (curr == NULL) {
+			cout << endl;
+			return;
+		}
+		cout << curr->data << "\t";
+		PrintListRecursively(curr->next);
+	}
+
+	void PrintRecursively() {
+		PrintListRecursively(head);
 	}
 
 };
@@ -285,37 +272,37 @@ public:
 template<typename T>
 class Stack : private DList<T> {
 public:
-    Stack() : DList<T>::DList() {
-    }
+	Stack() : DList<T>::DList() {
+	}
 
-    ~Stack() {
-    }
+	~Stack() {
+	}
 
-    void Push(T data) {
-    	DList<T>::Prepend(data);
-    }
+	void Push(T data) {
+		DList<T>::Prepend(data);
+	}
 
-    T Pop() {
-    	T temp = DList<T>::RetrieveHead();
-        DList<T>::DeleteHead();
-        return temp;
-    }
+	T Pop() {
+		T temp = DList<T>::RetrieveHead();
+		DList<T>::DeleteHead();
+		return temp;
+	}
 
-    T Peek() {
-    	return DList<T>::RetrieveHead();
-    }
+	T Peek() {
+		return DList<T>::RetrieveHead();
+	}
 
-    bool IsEmpty() {
-        return DList<T>::IsEmpty();
-    }
+	bool IsEmpty() {
+		return DList<T>::IsEmpty();
+	}
 
-    int GetLength() {
-        return DList<T>::Count();
-    }
+	int GetLength() {
+		return DList<T>::Count();
+	}
 
-    void PrintStack(){
-        	DList<T>::OutputFromHead();
-    }
+	void PrintStack() {
+		DList<T>::OutputFromHead();
+	}
 
 };
 
@@ -323,36 +310,36 @@ template<typename T>
 class Queue : private DList<T> {
 public:
 	Queue() : DList<T>::DList() {
-    }
+	}
 
-    ~Queue() {
-    }
+	~Queue() {
+	}
 
-    void Push(T data) {
-    	DList<T>::Prepend(data);
-    }
+	void Push(T data) {
+		DList<T>::Prepend(data);
+	}
 
-    T Pop() {
-    	T temp = DList<T>::RetrieveTail();
-        DList<T>::DeleteTail();
-        return temp;
-    }
+	T Pop() {
+		T temp = DList<T>::RetrieveTail();
+		DList<T>::DeleteTail();
+		return temp;
+	}
 
-    T Peek() {
-    	return DList<T>::RetrieveTail();
-    }
+	T Peek() {
+		return DList<T>::RetrieveTail();
+	}
 
-    bool IsEmpty() {
-        return DList<T>::IsEmpty();
-    }
+	bool IsEmpty() {
+		return DList<T>::IsEmpty();
+	}
 
-    int GetLength() {
-        return DList<T>::Count();
-    }
+	int GetLength() {
+		return DList<T>::Count();
+	}
 
-    void PrintQueue(){
-    	DList<T>::OutputFromHead();
-    }
+	void PrintQueue() {
+		DList<T>::OutputFromHead();
+	}
 
 };
 
